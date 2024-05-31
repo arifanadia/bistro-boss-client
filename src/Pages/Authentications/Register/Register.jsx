@@ -1,31 +1,46 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import loginBg from "../../../assets/others/authentication.png"
 import loginImg from "../../../assets/others/authentication2.png"
 import SocialLogin from "../SocialLogin/SocialLogin";
 import { useFormik } from "formik";
 import { signUpSchema } from "../../../schemas";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
+import useAuth from "../../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 
 const initialValues = {
     name: '',
+    photo: '',
     email: '',
     password: '',
 }
 
 const Register = () => {
+
+    const { createUser, updateUserProfile, setUser, user } = useAuth();
+    const navigate = useNavigate();
+
     const { values, handleChange, touched, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
         validationSchema: signUpSchema,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             console.log(values);
+            const result = await createUser(values.email, values.password);
+            console.log(result)
+            await updateUserProfile(values.name, values.photo)
+            setUser({ ...user, displayName: values.name, photoURL: values.photo })
+            
+            navigate('/')
+            toast.success('sign up successfully')
+
         }
     })
     console.log(errors);
     return (
-        <div className="md:h-[800px] py-12 my-10 bg-no-repeat bg-cover bg-center"
+        <div className="py-12 my-10 bg-no-repeat bg-cover bg-center"
             style={{ backgroundImage: `url(${loginBg})` }}>
-            <div className=" md:h-[700px] w-10/12 shadow-2xl pt-14 mx-auto bg-no-repeat bg-cover bg-center"
+            <div className=" w-10/12 shadow-2xl pt-14 mx-auto bg-no-repeat bg-cover bg-center"
                 style={{ backgroundImage: `url(${loginBg})` }}>
                 <Link to={'/'}>
                     <p className="text-black ml-14 flex items-center gap-2">
@@ -48,8 +63,18 @@ const Register = () => {
                                     onChange={handleChange}
                                     className="input input-bordered w-full " />
                             </div>
-
-                            <p className="text-red-600">{errors.name}</p>
+                            {errors.name && touched.name && <p className="text-red-600">{errors.name}</p>}
+                            <div className="form-control w-full ">
+                                <div className="label">
+                                    <span className="label-text">Photo URL</span>
+                                </div>
+                                <input type="url" name="photo"
+                                    placeholder="Type here"
+                                    value={values.photo}
+                                    onChange={handleChange}
+                                    className="input input-bordered w-full " />
+                            </div>
+                            {errors.photo && touched.photo && <p className="text-red-600">{errors.photo}</p>}
 
                             <div className="form-control w-full ">
                                 <div className="label">
@@ -61,9 +86,7 @@ const Register = () => {
                                     onChange={handleChange}
                                     className="input input-bordered w-full " />
                             </div>
-                            {errors.email && touched.email ?
-                                <p className="text-red-600">{errors.email}</p>
-                                : null}
+                            {errors.email && touched.email && <p className="text-red-600">{errors.email}</p>}
                             <div className="form-control w-full ">
                                 <div className="label">
                                     <span className="label-text">Password</span>
@@ -74,13 +97,11 @@ const Register = () => {
                                     onChange={handleChange}
                                     className="input input-bordered w-full" />
                             </div>
-                            {errors.password && touched.password ?
-                                <p className="text-red-600">{errors.password}</p>
-                                : null}
-
+                            {errors.password && touched.password && <p className="text-red-600">{errors.password}</p>}
+                            <button className="btn btn-active text-white bg-yellow-500 mt-6 w-full" type="submit">Sign Up</button>
 
                         </form>
-                        <button className="btn btn-active text-white bg-yellow-500 mt-6 w-full" type="submit">Sign Up</button>
+
                         <p className="text-yellow-600 text-center my-6">Already registered? Go to  <Link className="text-blue-500" to={'/login'}>log in</Link></p>
                         <SocialLogin></SocialLogin>
                     </div>

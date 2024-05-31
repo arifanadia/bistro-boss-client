@@ -1,50 +1,62 @@
 import { useFormik } from "formik";
 import loginBg from "../../../assets/others/authentication.png"
 import loginImg from "../../../assets/others/authentication2.png"
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+// import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
+// import { useEffect, useState } from "react";
+import useAuth from "../../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 
 const initialValues = {
     email: '',
     password: '',
 
+
 }
 const Login = () => {
-    const [disabled, setDisabled] = useState(true)
-    const captchaRef = useRef(null)
-  
+    // const [disabled, setDisabled] = useState(true)
+    const { login } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from.pathname || '/'
+
 
     const { values, handleChange, handleSubmit } = useFormik({
         initialValues: initialValues,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             console.log(values);
+            const result = await login(values.email, values.password)
+            console.log(result);
+            navigate(from, { replace: true });
+            toast.success('login successfully')
+
+
         }
     })
-    useEffect(() => {
-        loadCaptchaEnginge(6);
-    }, [])
-    const handleValidateCaptcha = () => {
-        const user_captcha_value = captchaRef.current.value
-        if (validateCaptcha(user_captcha_value)) {
-            setDisabled(false);
-        }
-        else {
-            setDisabled(true)
-        }
+    // useEffect(() => {
+    //     loadCaptchaEnginge(6);
+    // }, [])
+    // const handleValidateCaptcha = (e) => {
+    //     const user_captcha_value = e.target.value
+    //     if (validateCaptcha(user_captcha_value)) {
+    //         setDisabled(false);
+    //     }
+    //     else {
+    //         setDisabled(true)
+    //     }
 
-    }
+
+    // }
 
 
 
     return (
-        <div className="md:h-[800px] py-12 my-10 bg-no-repeat bg-cover bg-center"
+        <div className="py-12 my-10 bg-no-repeat bg-cover bg-center"
             style={{ backgroundImage: `url(${loginBg})` }}>
-            <div className=" md:h-[700px] w-10/12 shadow-2xl pt-14 mx-auto bg-no-repeat bg-cover bg-center"
+            <div className="  w-10/12 shadow-2xl pt-14 mx-auto bg-no-repeat bg-cover bg-center"
                 style={{ backgroundImage: `url(${loginBg})` }}>
                 <Link to={'/'}>
                     <p className="text-black ml-14 flex items-center gap-2">
@@ -78,19 +90,19 @@ const Login = () => {
                                     onChange={handleChange}
                                     className="input input-bordered w-full" />
                             </div>
-                            <div className="form-control w-full ">
+                            {/* <div className="form-control w-full ">
                                 <div className="label">
                                     <LoadCanvasTemplate />
                                 </div>
                                 <input type="text" name='captcha'
-                                    placeholder="Type here" ref={captchaRef}
+                                    placeholder="Type here"
                                     value={values.captcha}
                                     onChange={handleChange}
+                                    onBlur={handleValidateCaptcha}
                                     className="input input-bordered w-full" />
-                                <button  onClick={handleValidateCaptcha}  type="submit" className="btn btn-outline mt-4">validate</button>
-                            </div>
+                            </div> */}
 
-                            <button  disabled={disabled} className="btn btn-active text-white bg-yellow-500 mt-6 w-full" type="submit">Login</button>
+                            <button className="btn btn-active text-white bg-yellow-500 mt-6 w-full" type="submit">Login</button>
                         </form>
 
                         <p className="text-yellow-600 text-center my-6">New here? Create a New Account <Link className="text-blue-500" to={'/register'}>Sign Up</Link></p>
