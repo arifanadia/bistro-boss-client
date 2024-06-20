@@ -7,6 +7,7 @@ import { signUpSchema } from "../../../schemas";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 
 const initialValues = {
@@ -20,6 +21,7 @@ const Register = () => {
 
     const { createUser, updateUserProfile, setUser, user } = useAuth();
     const navigate = useNavigate();
+    const axiosPublic = useAxiosPublic()
 
     const { values, handleChange, touched, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
@@ -29,8 +31,13 @@ const Register = () => {
             const result = await createUser(values.email, values.password);
             console.log(result)
             await updateUserProfile(values.name, values.photo)
+            const userInfo = {
+                name: values.name,
+                email: values.email
+            }
+            axiosPublic.post('/users', userInfo)
             setUser({ ...user, displayName: values.name, photoURL: values.photo })
-            
+
             navigate('/')
             toast.success('sign up successfully')
 

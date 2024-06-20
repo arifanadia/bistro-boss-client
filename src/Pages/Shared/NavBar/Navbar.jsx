@@ -9,14 +9,14 @@ const Navbar = () => {
 
 
     const handleLogOut = async () => {
-        const result = await logOut()
-        console.log(result);
+      await logOut()
+     
 
     }
     const profile = <>
         {
             user ?
-                <div className="dropdown dropdown-end">
+                <div className="dropdown dropdown-end text-black">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
                             <img alt="Tailwind CSS Navbar component" src={user.photoURL} />
@@ -45,7 +45,8 @@ const Navbar = () => {
             <li><Link to={'/'}>Home</Link></li>
             <li><Link to={'/menu'}>Our Menu</Link></li>
             <li><Link to={'/order/salad'}>Order Food</Link></li>
-            <li><Link to={'/cart'}>
+            <li><Link to={'/dashboard'}>My account</Link></li>
+            <li><Link to={'/dashboard/cart'}>
                 <button className="btn">
                     <FaShoppingCart />
                     <div className="badge badge-warning">+{cart.length}</div>
@@ -69,7 +70,7 @@ const Navbar = () => {
                     <a className="btn btn-ghost text-xl">Bistro Boss</a>
                 </div>
                 <div className="navbar-end hidden lg:flex">
-                    <ul className="menu items-center menu-horizontal px-1">
+                    <ul className="menu items-center menu-horizontal px-1 ">
                         {navOptions}
                     </ul>
                 </div>

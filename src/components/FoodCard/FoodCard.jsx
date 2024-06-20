@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
-import useAuth from "../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAxiosSecure from "../hooks/useAxiosSecure";
-import useCart from "../hooks/useCart";
+import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useCart from "../../hooks/useCart";
 
 
 const FoodCard = ({ item }) => {
@@ -10,7 +10,7 @@ const FoodCard = ({ item }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const axiosSecure = useAxiosSecure();
+    const axiosSecure = useAxiosSecure()
     const [,refetch] = useCart();
 
     const handleAddToCard = () => {
@@ -62,7 +62,7 @@ const FoodCard = ({ item }) => {
 
     return (
         <div className="card w-96 bg-base-300 shadow-xl">
-            <figure><img src={image} alt="food" /></figure>
+            <figure><img className="w-full" src={image} alt="food" /></figure>
             <p className="absolute right-3 bg-black text-white top-3 px-2 py-1 ">${price}</p>
             <div className="card-body text-center">
                 <h2 className="text-2xl">{name}</h2>
